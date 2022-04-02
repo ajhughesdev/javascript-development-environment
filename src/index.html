@@ -1,9 +1,44 @@
+<!--
+  **NOTE:** This is a template for index.html.
+  It uses ejs and HtmlWebpackPlugin to generate a different index.html for each environment.
+  htmlWebpackPlugin will dynamically add references to the scripts and styles that it bundles
+  to this file. The generated bundles have hash-based filenames,
+  so it's necessary to add the references dynamically.
+  For more info on ejs, see https://ejs.co.
+  For examples of using it with HtmlWebpackPlugin,
+  see https://github.com/jaketrent/html-webpack-template/blob/master/index.ejs
+  -->
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <script src="https://polyfill.io/v3/polyfill.min.js?version=3.110.1&features=fetch"></script>
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({
+      token: "1948dd919177444cb4f7fa2a06e31a77"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+
+  </script>
+
+  <meta charset="UTF-8" />
+  <!--
+    The htmlWebpackPlugin will parse the logic below so that trackJS is only added to the production version of index.html
+    (since only webpack.config.prod.js provides the trackJS token)
+    This is an example of how to add features to index.html for only one environment.
+    -->
+  <% if (htmlWebpackPlugin.options.trackJSToken) { %>
+  <!-- BEGIN TRACKJS -->
+  <script type="text/javascript">
+    window._trackJs = {
+      token: '<%=htmlWebpackPlugin.options.trackJSToken%>'
+    };
+
+  </script>
+  <script type="text/javascript" src="https://cdn.trackjs.com/releases/current/tracker.js"></script>
+  <!-- END TRACKJS -->
+  <% } %>
 </head>
 
 <body>
@@ -16,11 +51,8 @@
       <th>Last Name</th>
       <th>Email</th>
     </thead>
-    <tbody id="users">
-
-    </tbody>
+    <tbody id="users"></tbody>
   </table>
-  <script src="bundle.js"></script>
 </body>
 
 </html>
